@@ -1,703 +1,179 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="referrer" content="no-referrer">
-<title>Tushar_Stream Live</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIFA WORLD CUP 2026</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
 
-<style>
-:root{--red:#ef4444}
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FMP9REY96D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FMP9REY96D');
+  </script>
 
-html[data-theme="dark"]{
-  --bg:#0a0a10;--surface:#15131d;--surface2:#1e1b28;
-  --accent:#8b5cf6;--accent2:#b794f6;
-  --glow:rgba(139,92,246,.28);--text:#f5f3fb;
-  --muted:#8d8798;--border:rgba(255,255,255,.08);
-  --border-strong:rgba(255,255,255,.16);
-  --stripe:rgba(139,92,246,.045);
-  --stripe-strong:rgba(139,92,246,.065);
-  --page-glow:rgba(139,92,246,.025);
-}
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html[data-theme="light"]{
-  --bg:#faf9ff;--surface:#fff;--surface2:#f3efff;
-  --accent:#8b5cf6;--accent2:#a78bfa;
-  --glow:rgba(139,92,246,.18);--text:#17121f;
-  --muted:#6f6780;--border:rgba(23,18,31,.08);
-  --border-strong:rgba(23,18,31,.14);
-  --stripe:rgba(139,92,246,.045);
-  --stripe-strong:rgba(139,92,246,.065);
-  --page-glow:rgba(139,92,246,.04);
-}
+    html, body {
+      background: #000;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
 
-*,*::before,*::after{
-  box-sizing:border-box;margin:0;padding:0;
-  -webkit-tap-highlight-color:transparent;
-}
-html,body{min-height:100%;background:var(--bg)}
-body{
-  font-family:'Poppins',sans-serif;color:var(--text);
-  min-height:100vh;display:flex;justify-content:center;
-  padding-bottom:40px;transition:background .3s,color .3s;
-  background-image:repeating-linear-gradient(
-    135deg,transparent 0,transparent 18px,
-    var(--stripe) 18px,var(--stripe-strong) 20px,
-    transparent 20px,transparent 38px
-  );
-}
-body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;
-  background:radial-gradient(circle at 50% 20%,var(--page-glow),transparent 45%);
-  z-index:0;
-}
-button,a{font:inherit}
-button{-webkit-appearance:none}
-.page{
-  width:100%;max-width:520px;position:relative;
-  z-index:1;padding:0 0 20px;
-}
+    .shaka-video-container {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-/* HEADER */
-.topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  min-height:78px;padding:12px 16px;gap:10px;
-}
-.brand-center{display:flex;align-items:flex-start;gap:8px}
-.brand{
-  display:flex;align-items:center;gap:8px;
-  text-decoration:none;color:var(--text);
-}
-.brand .dot{
-  width:9px;height:9px;background:var(--accent);
-  border-radius:2px;transform:rotate(45deg);
-  box-shadow:0 0 14px var(--glow);
-}
-.brand .t{font-weight:800;font-size:17px;letter-spacing:.2px}
-.brand-live{
-  background:#ef4444;color:#fff;font-size:8px;font-weight:800;
-  line-height:1;padding:4px 6px;border-radius:5px;
-  letter-spacing:.3px;margin-top:-2px;
-  box-shadow:0 4px 12px rgba(239,68,68,.22);
-}
-.top-actions{display:flex;align-items:center;gap:7px}
-.live-dot{
-  width:7px;height:7px;border-radius:50%;background:var(--red);
-  box-shadow:0 0 10px rgba(239,68,68,.6);
-  animation:blink 1.2s infinite;
-}
-.toggle{
-  width:44px;height:44px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--surface2);
-  border:1px solid rgba(139,92,246,.16);
-  color:var(--accent);cursor:pointer;
-  transition:background .3s,transform .2s,box-shadow .3s;
-}
-.toggle:hover{
-  transform:translateY(-1px);
-  box-shadow:0 5px 16px rgba(139,92,246,.12);
-}
-.toggle .theme-icon{width:22px;height:22px;display:block}
-html[data-theme="dark"] .toggle{
-  background:#211b2d;border-color:rgba(139,92,246,.25);
-}
-html[data-theme="dark"] .moon-icon{display:none}
-html[data-theme="light"] .sun-icon{display:none}
+    video {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      object-fit: contain;
+    }
 
-/* 16:9 IFRAME PLAYER */
-.stage{
-  position:relative;width:100%;aspect-ratio:16/9;
-  background:#000;overflow:hidden;border-radius:18px;
-  border:1px solid var(--border);
-  box-shadow:0 8px 30px rgba(0,0,0,.18);
-}
-.stage-tag{
-  position:absolute;top:10px;left:10px;z-index:10;
-  display:flex;align-items:center;gap:5px;
-  background:var(--red);color:#fff;font-size:10px;
-  font-weight:700;letter-spacing:.5px;padding:4px 8px;
-  border-radius:6px;box-shadow:0 5px 15px rgba(0,0,0,.25);
-  pointer-events:none;
-}
-html[data-theme="light"] .stage-tag{background:#8b5cf6}
-.stage-tag .dot{
-  width:5px;height:5px;background:#fff;border-radius:50%;
-  animation:blink 1.2s infinite;
-}
-@keyframes blink{50%{opacity:.3}}
-
-#player-container{
-  position:absolute;inset:0;width:100%;height:100%;
-  background:#000;z-index:1;
-}
-#player-container iframe{
-  position:absolute;inset:0;display:block;
-  width:100%;height:100%;border:0;background:#000;
-}
-
-/* LOADER */
-.player-loader{
-  position:absolute;inset:0;z-index:12;
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;background:#09090e;
-  gap:12px;color:#cfcbdb;font-size:12px;
-  padding:15px;text-align:center;
-  transition:opacity .3s ease;
-}
-.player-loader.hidden{opacity:0;pointer-events:none}
-.spinner{
-  width:36px;height:36px;
-  border:3px solid rgba(255,255,255,.15);
-  border-top-color:var(--accent2);
-  border-radius:50%;animation:spin .9s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-size:12px;color:#cfcbdb;font-weight:500}
-
-/* ERROR */
-.error-box{
-  text-align:center;padding:15px;max-width:320px;color:#fff;
-}
-.error-box b{display:block;font-size:17px;margin-bottom:8px}
-.error-box small{
-  display:block;color:#bbb4c8;font-size:12px;
-  line-height:1.6;word-break:break-word;
-}
-.error-box button{
-  margin-top:16px;border:0;border-radius:10px;
-  padding:10px 22px;color:#fff;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  font-weight:700;cursor:pointer;
-}
-
-/* TELEGRAM */
-.section-block{padding:18px 16px 4px}
-.section-label{
-  font-size:11px;font-weight:700;letter-spacing:1px;
-  color:var(--muted);text-transform:uppercase;margin-bottom:10px;
-}
-.tg-card{
-  display:flex;align-items:center;gap:12px;padding:12px 14px;
-  border-radius:14px;background:var(--surface);
-  border:1px solid var(--border);text-decoration:none;
-  color:var(--text);
-  transition:transform .2s,border .2s,box-shadow .2s;
-}
-.tg-card:hover{
-  transform:translateY(-1px);border-color:var(--border-strong);
-  box-shadow:0 8px 22px rgba(0,0,0,.12);
-}
-.tg-icon{
-  width:42px;height:42px;flex:0 0 auto;border-radius:12px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  display:flex;align-items:center;justify-content:center;color:#fff;
-}
-.tg-icon svg{
-  width:20px;height:20px;fill:none;stroke:currentColor;
-  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
-}
-.tg-info{flex:1;min-width:0}
-.tg-info h3{font-size:14.5px;font-weight:700;margin-bottom:2px}
-.tg-info p{font-size:12px;color:var(--muted)}
-.tg-arrow{
-  width:30px;height:30px;flex:0 0 auto;border-radius:50%;
-  background:var(--surface2);display:flex;align-items:center;
-  justify-content:center;color:var(--accent);
-}
-.tg-arrow svg{
-  width:16px;height:16px;fill:none;stroke:currentColor;
-  stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;
-}
-
-/* SHARE */
-.divider-label{
-  text-align:center;font-size:10.5px;font-weight:700;
-  letter-spacing:1.5px;color:var(--muted);
-  text-transform:uppercase;margin:22px 16px 4px;position:relative;
-}
-.divider-label::before{
-  content:"";position:absolute;left:0;right:0;top:50%;
-  border-top:1px solid var(--border);z-index:0;
-}
-.divider-label span{
-  position:relative;z-index:1;background:var(--bg);padding:0 10px;
-}
-.share-btn{
-  width:100%;display:flex;align-items:center;justify-content:center;
-  gap:9px;border:0;border-radius:13px;padding:14px 16px;
-  font-size:14.5px;font-weight:700;color:#fff;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  box-shadow:0 14px 30px -14px var(--glow);
-  cursor:pointer;font-family:'Poppins',sans-serif;
-}
-.share-btn svg{
-  width:18px;height:18px;fill:none;stroke:currentColor;
-  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
-}
-.footer-credit{
-  text-align:center;padding:26px 16px 4px;
-  font-size:12px;color:var(--muted);
-}
-.footer-credit b{color:var(--text)}
-
-/* TELEGRAM MODAL */
-.modal{
-  position:fixed;inset:0;z-index:10000;
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;background:rgba(0,0,0,.55);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-}
-.modal.hidden{display:none!important}
-.modal-content{
-  width:100%;max-width:390px;padding:27px 22px 22px;
-  border-radius:20px;background:var(--surface);
-  border:1px solid var(--border-strong);
-  box-shadow:0 25px 80px rgba(0,0,0,.4);
-  text-align:center;animation:modalIn .25s ease;
-}
-@keyframes modalIn{
-  from{opacity:0;transform:scale(.96) translateY(8px)}
-  to{opacity:1;transform:scale(1) translateY(0)}
-}
-.modal-content h2{font-size:21px;margin-bottom:8px}
-.modal-content p{
-  color:var(--muted);font-size:13px;
-  line-height:1.55;margin-bottom:20px;
-}
-.modal-actions{display:flex;flex-direction:column;gap:9px}
-.modal-primary,.modal-secondary{
-  width:100%;border:0;border-radius:11px;padding:11px 14px;
-  cursor:pointer;font-size:13px;font-weight:700;
-}
-.modal-primary{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#fff;box-shadow:0 10px 25px -12px var(--glow);
-}
-.modal-secondary{
-  background:var(--surface2);color:var(--text);
-  border:1px solid var(--border);
-}
-
-/* TOAST */
-.toast{
-  position:fixed;left:50%;bottom:22px;
-  transform:translateX(-50%) translateY(15px);
-  z-index:20000;padding:9px 16px;border-radius:100px;
-  background:var(--surface);border:1px solid var(--border-strong);
-  color:var(--text);font-size:12px;font-weight:600;
-  opacity:0;pointer-events:none;
-  transition:opacity .25s,transform .25s;
-  white-space:nowrap;box-shadow:0 14px 35px rgba(0,0,0,.25);
-}
-.toast.show{
-  opacity:1;transform:translateX(-50%) translateY(0);
-}
-
-@media(max-width:520px){
-  .stage{border-radius:0;border-left:0;border-right:0}
-  .topbar{padding:13px 14px}
-}
-@media(max-width:560px){
-  .topbar{min-height:72px;padding:10px}
-  .top-actions{gap:4px}
-  .toggle{width:40px;height:40px}
-  .brand .t{font-size:16px}
-}
-@media(prefers-reduced-motion:reduce){
-  *{animation-duration:.001ms!important;transition-duration:.001ms!important}
-}
-</style>
+    .shaka-spinner-container,
+    .shaka-spinner,
+    .shaka-spinner-svg {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+  </style>
 </head>
 
 <body>
-<div class="page">
 
-  <div class="topbar">
-    <div class="brand-center">
-      <a class="brand" href="https://t.me/Tushar_Stream"
-         target="_blank" rel="noopener noreferrer">
-        <span class="dot"></span>
-        <span class="t">Tushar_Stream</span>
-      </a>
-      <span class="brand-live">LIVE</span>
-    </div>
-
-    <div class="top-actions">
-      <span class="live-dot"></span>
-      <button class="toggle" id="themeToggle"
-              aria-label="Switch theme">
-        <svg class="theme-icon moon-icon" viewBox="0 0 24 24"
-             fill="currentColor">
-          <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5 8.5 8.5 0 1 0 20.5 15.5Z"/>
-        </svg>
-        <svg class="theme-icon sun-icon" viewBox="0 0 24 24"
-             fill="none" stroke="currentColor"
-             stroke-width="2" stroke-linecap="round">
-          <circle cx="12" cy="12" r="4"/>
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l-1.42 1.42M17.65 6.35l1.42-1.42"/>
-        </svg>
-      </button>
-    </div>
+  <div class="shaka-video-container" data-shaka-player>
+    <video autoplay playsinline preload="metadata"
+      poster="https://w0.peakpx.com/wallpaper/183/933/HD-wallpaper-fifa-world-cup-26-u-sports-soccer-mexico-canada-football-fifa-world-cup-world-cup-2026-we-are-26-sport-event-international-competition-global-event-tournament.jpg">
+    </video>
   </div>
 
-  <!-- ENCRYPTED-MEDIA ENABLED IFRAME PLAYER -->
-  <div class="stage" id="playerContainer"
-       role="region" aria-label="Live stream player">
-    <div class="stage-tag">
-      <span class="dot"></span>LIVE
-    </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
 
-    <div id="player-container"></div>
+      shaka.polyfill.installAll();
 
-    <div class="player-loader" id="loading">
-      <div class="spinner"></div>
-      <span class="loading-text">Loading stream...</span>
-    </div>
-  </div>
-
-  <div class="section-block">
-    <div class="section-label">Telegram Channel</div>
-    <a class="tg-card" href="https://t.me/Tushar_Stream"
-       target="_blank" rel="noopener noreferrer">
-      <span class="tg-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M21 4 3.5 10.5c-.9.3-.9.9-.2 1.2l4.5 1.4 1.7 5.1c.2.6.5.7.9.3l2.5-2.5 4.7 3.5c.6.4 1 .2 1.2-.5L22 5c.2-.8-.3-1.2-1-1z"/>
-          <path d="m8 13 10-6-7.5 7.5"/>
-        </svg>
-      </span>
-      <span class="tg-info">
-        <h3>Telegram Channel</h3>
-        <p>Join for free live links</p>
-      </span>
-      <span class="tg-arrow">
-        <svg viewBox="0 0 24 24">
-          <path d="m9 6 6 6-6 6"/>
-        </svg>
-      </span>
-    </a>
-  </div>
-
-  <div class="divider-label"><span>Share</span></div>
-
-  <div class="section-block">
-    <div class="section-label">Share This Stream</div>
-    <button class="share-btn" id="shareStreamBtn">
-      <svg viewBox="0 0 24 24">
-        <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/>
-        <path d="M16 6l-4-4-4 4"/>
-        <path d="M12 2v14"/>
-      </svg>
-      Share stream
-    </button>
-  </div>
-
-  <div class="footer-credit">
-    Made with ❤️ for you <b>© Tushar_Stream</b>
-  </div>
-
-</div>
-
-<!-- TELEGRAM MODAL -->
-<div class="modal" id="joinModal" role="dialog"
-     aria-modal="true" aria-labelledby="modalTitle">
-  <div class="modal-content">
-    <h2 id="modalTitle">Join Telegram</h2>
-    <p>Join Telegram for live links &amp; match updates!</p>
-    <div class="modal-actions">
-      <button class="modal-primary" id="joinButton">
-        Join Telegram Channel
-      </button>
-      <button class="modal-secondary" id="closeButton">
-        Already joined
-      </button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast" role="status" aria-live="polite">
-  Link copied to clipboard
-</div>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-  const API_URL = "https://matcheslinkz.pages.dev/id.json";
-  const TELEGRAM_URL = "https://t.me/Tushar_Stream";
-
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
-
-  const playerContainer = document.getElementById("player-container");
-  const loading = document.getElementById("loading");
-  const modal = document.getElementById("joinModal");
-  const toast = document.getElementById("toast");
-  const themeToggle = document.getElementById("themeToggle");
-  const shareBtn = document.getElementById("shareStreamBtn");
-
-  let toastTimer = null;
-  let loadAttempt = 0;
-
-  /* THEME */
-  function initTheme() {
-    let theme = "dark";
-    try {
-      theme = localStorage.getItem("cxp_theme") || "dark";
-    } catch (_) {}
-
-    document.documentElement.setAttribute(
-      "data-theme",
-      theme === "light" ? "light" : "dark"
-    );
-  }
-
-  initTheme();
-
-  themeToggle.addEventListener("click", function () {
-    const current = document.documentElement.getAttribute("data-theme");
-    const next = current === "light" ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", next);
-
-    try {
-      localStorage.setItem("cxp_theme", next);
-    } catch (_) {}
-  });
-
-  /* TELEGRAM MODAL */
-  function dismissModal() {
-    modal.classList.add("hidden");
-    try {
-      sessionStorage.setItem("cxp_joined", "1");
-    } catch (_) {}
-  }
-
-  document.getElementById("joinButton").addEventListener("click", function () {
-    window.open(TELEGRAM_URL, "_blank", "noopener,noreferrer");
-    dismissModal();
-  });
-
-  document.getElementById("closeButton")
-    .addEventListener("click", dismissModal);
-
-  modal.addEventListener("click", function (e) {
-    if (e.target === modal) dismissModal();
-  });
-
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && !modal.classList.contains("hidden")) {
-      dismissModal();
-    }
-  });
-
-  try {
-    if (sessionStorage.getItem("cxp_joined") === "1") {
-      modal.classList.add("hidden");
-    }
-  } catch (_) {}
-
-  /* TOAST */
-  function showToast(message) {
-    toast.textContent = message;
-    toast.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () {
-      toast.classList.remove("show");
-    }, 2500);
-  }
-
-  /* LOADER */
-  function showLoading() {
-    loading.classList.remove("hidden");
-    loading.style.display = "flex";
-    loading.innerHTML = `
-      <div class="spinner"></div>
-      <span class="loading-text">Loading stream...</span>
-    `;
-  }
-
-  function hideLoading() {
-    loading.classList.add("hidden");
-    setTimeout(function () {
-      if (loading.classList.contains("hidden")) {
-        loading.style.display = "none";
-      }
-    }, 300);
-  }
-
-  /* ERROR */
-  function showError(message) {
-    loading.classList.remove("hidden");
-    loading.style.display = "flex";
-    loading.innerHTML = "";
-
-    const box = document.createElement("div");
-    box.className = "error-box";
-
-    const heading = document.createElement("b");
-    heading.textContent = "Unable to load stream";
-
-    const description = document.createElement("small");
-    description.textContent = message;
-
-    const retryBtn = document.createElement("button");
-    retryBtn.textContent = "Retry";
-    retryBtn.addEventListener("click", initPlayer);
-
-    box.append(heading, description, retryBtn);
-    loading.appendChild(box);
-  }
-
-  /* IFRAME PLAYER WITH ENCRYPTED MEDIA */
-  async function initPlayer() {
-    const attempt = ++loadAttempt;
-    showLoading();
-    playerContainer.replaceChildren();
-
-    if (!id) {
-      showError("Invalid or missing stream ID. Please check the link.");
-      return;
-    }
-
-    try {
-      const response = await fetch(API_URL);
-
-      if (!response.ok) {
-        throw new Error("API request failed: HTTP " + response.status);
+      if (!shaka.Player.isBrowserSupported()) {
+        console.error('Browser not supported');
+        return;
       }
 
-      const data = await response.json();
+      const video = document.querySelector('video');
+      const player = new shaka.Player();
 
-      if (attempt !== loadAttempt) return;
+      await player.attach(video);
 
-      if (!data.iframes || !Array.isArray(data.iframes)) {
-        throw new Error("Invalid iframe data received from API.");
-      }
+      const container = document.querySelector('.shaka-video-container');
+      const ui = new shaka.ui.Overlay(player, container, video);
 
-      /* MATCH ID USING FIRST HTML API STRUCTURE */
-      const match = data.iframes.find(function (item) {
-        return String(item.id) === String(id);
-      });
+      ui.configure({
+        controlPanelElements: [
+          'play_pause', 'time_and_duration', 'mute', 'volume',
+          'spacer', 'language', 'captions', 'picture_in_picture',
+          'quality', 'fullscreen'
+        ],
 
-      if (!match || !match.iframeSrc) {
-        throw new Error(
-          "Invalid or unavailable stream ID. Please check the link."
-        );
-      }
+        volumeBarColors: {
+          base: 'rgba(0, 136, 255, 0.3)',
+          level: 'rgb(0, 136, 255)'
+        },
 
-      const iframeUrl = new URL(match.iframeSrc, window.location.href);
-
-      if (!["https:", "http:"].includes(iframeUrl.protocol)) {
-        throw new Error("Invalid iframe URL.");
-      }
-
-      /* CREATE IFRAME */
-      const iframe = document.createElement("iframe");
-
-      iframe.src = iframeUrl.href;
-
-      /* ENCRYPTED MEDIA + PLAYBACK PERMISSIONS */
-      iframe.setAttribute(
-        "allow",
-        "autoplay; encrypted-media; fullscreen; picture-in-picture"
-      );
-
-      iframe.setAttribute("allowfullscreen", "");
-      iframe.setAttribute("webkitallowfullscreen", "");
-
-      /* SANDBOX: block popups, top navigation, modals, downloads */
-      iframe.setAttribute(
-        "sandbox",
-        "allow-same-origin allow-scripts allow-forms allow-presentation"
-      );
-
-      /* Prevent referrer leakage / redirects */
-      iframe.setAttribute("referrerpolicy", "no-referrer");
-
-      iframe.setAttribute("loading", "eager");
-      iframe.setAttribute("title", "Tushar_Stream Live Stream");
-
-      iframe.style.width = "100%";
-      iframe.style.height = "100%";
-      iframe.style.border = "none";
-      iframe.style.display = "block";
-
-      iframe.addEventListener("load", function () {
-        if (attempt === loadAttempt) {
-          hideLoading();
+        seekBarColors: {
+          base: 'rgba(90, 0, 0, 0.3)',
+          buffered: 'rgba(120, 0, 0, 0.6)',
+          played: 'rgb(170, 0, 0)'
         }
       });
 
-      iframe.addEventListener("error", function () {
-        if (attempt === loadAttempt) {
-          showError("Unable to load the embedded player.");
+      let drmConfig = {
+        clearKeys: {
+          "115086768751d95aac011169ff3547bd":
+            "3e3c4e34b782a6ffe98df710f8dc0a00"
+        }
+      };
+
+      let streamUrl = "https://abn7ylpaaaaaaaame77ehqq2geew7.ta.bia-cf.live.pv-cdn.net/bom-nitro/live/clients/dash/enc/cykl8o2zcf/out/v1/6623d98f16214d3d8fb5bee1245770c1/cenc.mpd";
+
+      player.configure({
+        drm: drmConfig,
+
+        // Prefer Hindi audio
+        preferredAudioLanguage: 'hi',
+        preferredTextLanguage: 'hi',
+
+        streaming: {
+          lowLatencyMode: true,
+          bufferingGoal: 15,
+          rebufferingGoal: 2,
+          bufferBehind: 15,
+
+          retryParameters: {
+            timeout: 10000,
+            maxAttempts: 5,
+            baseDelay: 300,
+            backoffFactor: 1.2
+          },
+
+          segmentRequestTimeout: 8000,
+          segmentPrefetchLimit: 2,
+          useNativeHlsOnSafari: true
+        },
+
+        manifest: {
+          retryParameters: {
+            timeout: 8000,
+            maxAttempts: 3
+          }
         }
       });
 
-      playerContainer.appendChild(iframe);
+      player.addEventListener('error', (event) => {
+        console.error('Shaka Player Error:', event.detail);
+      });
 
-      console.log("Tushar_Stream iframe initialized for ID:", id);
+      try {
 
-    } catch (error) {
-      if (attempt !== loadAttempt) return;
-      console.error("Tushar_Stream Player Error:", error);
-      showError(error.message || "Stream could not be loaded.");
-    }
-  }
+        await player.load(streamUrl);
 
-  /* SHARE */
-  async function copyStreamLink(url) {
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(url);
-    } else {
-      const input = document.createElement("textarea");
-      input.value = url;
-      input.style.position = "fixed";
-      input.style.opacity = "0";
-      document.body.appendChild(input);
-      input.select();
+        // Automatically select Hindi audio
+        const audioTracks = player.getVariantTracks();
 
-      const copied = document.execCommand("copy");
-      input.remove();
+        const hindiTrack = audioTracks.find(track => {
+          const lang = (track.language || '').toLowerCase();
 
-      if (!copied) throw new Error("Copy failed");
-    }
-
-    showToast("Link copied to clipboard");
-  }
-
-  shareBtn.addEventListener("click", async function () {
-    const url = window.location.href;
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "Tushar_Stream Live",
-          text: "Watch this live stream on Tushar_Stream",
-          url: url
+          return lang === 'hi' ||
+                 lang === 'hin' ||
+                 lang.startsWith('hi-');
         });
-      } else {
-        await copyStreamLink(url);
-      }
-    } catch (error) {
-      if (error.name !== "AbortError") {
-        try {
-          await copyStreamLink(url);
-        } catch (_) {
-          showToast("Unable to copy link");
+
+        if (hindiTrack) {
+          player.selectVariantTrack(hindiTrack, true);
+          console.log('Hindi audio selected successfully');
+        } else {
+          console.warn('Hindi audio track not available');
+          console.log('Available audio tracks:', audioTracks);
         }
+
+        console.log('Stream loaded successfully');
+
+      } catch (error) {
+        console.error('Load error:', error);
       }
-    }
-  });
 
-  /* START */
-  initPlayer();
+    });
+  </script>
 
-});
-</script>
 </body>
 </html>
