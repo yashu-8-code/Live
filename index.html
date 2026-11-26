@@ -245,6 +245,45 @@ html[data-theme="light"] .stage-tag{background:#8b5cf6}
 }
 .footer-credit b{color:var(--text)}
 
+/* TELEGRAM MODAL */
+.modal{
+  position:fixed;inset:0;z-index:10000;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;background:rgba(0,0,0,.55);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.modal.hidden{display:none!important}
+.modal-content{
+  width:100%;max-width:390px;padding:27px 22px 22px;
+  border-radius:20px;background:var(--surface);
+  border:1px solid var(--border-strong);
+  box-shadow:0 25px 80px rgba(0,0,0,.4);
+  text-align:center;animation:modalIn .25s ease;
+}
+@keyframes modalIn{
+  from{opacity:0;transform:scale(.96) translateY(8px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+.modal-content h2{font-size:21px;margin-bottom:8px}
+.modal-content p{
+  color:var(--muted);font-size:13px;
+  line-height:1.55;margin-bottom:20px;
+}
+.modal-actions{display:flex;flex-direction:column;gap:9px}
+.modal-primary,.modal-secondary{
+  width:100%;border:0;border-radius:11px;padding:11px 14px;
+  cursor:pointer;font-size:13px;font-weight:700;
+}
+.modal-primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;box-shadow:0 10px 25px -12px var(--glow);
+}
+.modal-secondary{
+  background:var(--surface2);color:var(--text);
+  border:1px solid var(--border);
+}
+
 /* TOAST */
 .toast{
   position:fixed;left:50%;bottom:22px;
@@ -314,4 +353,351 @@ html[data-theme="light"] .stage-tag{background:#8b5cf6}
       <span class="dot"></span>LIVE
     </div>
 
-    <div id="player-container
+    <div id="player-container"></div>
+
+    <div class="player-loader" id="loading">
+      <div class="spinner"></div>
+      <span class="loading-text">Loading stream...</span>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <div class="section-label">Telegram Channel</div>
+    <a class="tg-card" href="https://t.me/Tushar_Stream"
+       target="_blank" rel="noopener noreferrer">
+      <span class="tg-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M21 4 3.5 10.5c-.9.3-.9.9-.2 1.2l4.5 1.4 1.7 5.1c.2.6.5.7.9.3l2.5-2.5 4.7 3.5c.6.4 1 .2 1.2-.5L22 5c.2-.8-.3-1.2-1-1z"/>
+          <path d="m8 13 10-6-7.5 7.5"/>
+        </svg>
+      </span>
+      <span class="tg-info">
+        <h3>Telegram Channel</h3>
+        <p>Join for free live links</p>
+      </span>
+      <span class="tg-arrow">
+        <svg viewBox="0 0 24 24">
+          <path d="m9 6 6 6-6 6"/>
+        </svg>
+      </span>
+    </a>
+  </div>
+
+  <div class="divider-label"><span>Share</span></div>
+
+  <div class="section-block">
+    <div class="section-label">Share This Stream</div>
+    <button class="share-btn" id="shareStreamBtn">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/>
+        <path d="M16 6l-4-4-4 4"/>
+        <path d="M12 2v14"/>
+      </svg>
+      Share stream
+    </button>
+  </div>
+
+  <div class="footer-credit">
+    Made with ❤️ for you <b>© Tushar_Stream</b>
+  </div>
+
+</div>
+
+<!-- TELEGRAM MODAL -->
+<div class="modal" id="joinModal" role="dialog"
+     aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-content">
+    <h2 id="modalTitle">Join Telegram</h2>
+    <p>Join Telegram for live links &amp; match updates!</p>
+    <div class="modal-actions">
+      <button class="modal-primary" id="joinButton">
+        Join Telegram Channel
+      </button>
+      <button class="modal-secondary" id="closeButton">
+        Already joined
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  Link copied to clipboard
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const API_URL = "https://matcheslinkz.pages.dev/id.json";
+  const TELEGRAM_URL = "https://t.me/Tushar_Stream";
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+
+  const playerContainer = document.getElementById("player-container");
+  const loading = document.getElementById("loading");
+  const modal = document.getElementById("joinModal");
+  const toast = document.getElementById("toast");
+  const themeToggle = document.getElementById("themeToggle");
+  const shareBtn = document.getElementById("shareStreamBtn");
+
+  let toastTimer = null;
+  let loadAttempt = 0;
+
+  /* THEME */
+  function initTheme() {
+    let theme = "dark";
+    try {
+      theme = localStorage.getItem("cxp_theme") || "dark";
+    } catch (_) {}
+
+    document.documentElement.setAttribute(
+      "data-theme",
+      theme === "light" ? "light" : "dark"
+    );
+  }
+
+  initTheme();
+
+  themeToggle.addEventListener("click", function () {
+    const current = document.documentElement.getAttribute("data-theme");
+    const next = current === "light" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", next);
+
+    try {
+      localStorage.setItem("cxp_theme", next);
+    } catch (_) {}
+  });
+
+  /* TELEGRAM MODAL */
+  function dismissModal() {
+    modal.classList.add("hidden");
+    try {
+      sessionStorage.setItem("cxp_joined", "1");
+    } catch (_) {}
+  }
+
+  document.getElementById("joinButton").addEventListener("click", function () {
+    window.open(TELEGRAM_URL, "_blank", "noopener,noreferrer");
+    dismissModal();
+  });
+
+  document.getElementById("closeButton")
+    .addEventListener("click", dismissModal);
+
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) dismissModal();
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+      dismissModal();
+    }
+  });
+
+  try {
+    if (sessionStorage.getItem("cxp_joined") === "1") {
+      modal.classList.add("hidden");
+    }
+  } catch (_) {}
+
+  /* TOAST */
+  function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      toast.classList.remove("show");
+    }, 2500);
+  }
+
+  /* LOADER */
+  function showLoading() {
+    loading.classList.remove("hidden");
+    loading.style.display = "flex";
+    loading.innerHTML = `
+      <div class="spinner"></div>
+      <span class="loading-text">Loading stream...</span>
+    `;
+  }
+
+  function hideLoading() {
+    loading.classList.add("hidden");
+    setTimeout(function () {
+      if (loading.classList.contains("hidden")) {
+        loading.style.display = "none";
+      }
+    }, 300);
+  }
+
+  /* ERROR */
+  function showError(message) {
+    loading.classList.remove("hidden");
+    loading.style.display = "flex";
+    loading.innerHTML = "";
+
+    const box = document.createElement("div");
+    box.className = "error-box";
+
+    const heading = document.createElement("b");
+    heading.textContent = "Unable to load stream";
+
+    const description = document.createElement("small");
+    description.textContent = message;
+
+    const retryBtn = document.createElement("button");
+    retryBtn.textContent = "Retry";
+    retryBtn.addEventListener("click", initPlayer);
+
+    box.append(heading, description, retryBtn);
+    loading.appendChild(box);
+  }
+
+  /* IFRAME PLAYER WITH ENCRYPTED MEDIA */
+  async function initPlayer() {
+    const attempt = ++loadAttempt;
+    showLoading();
+    playerContainer.replaceChildren();
+
+    if (!id) {
+      showError("Invalid or missing stream ID. Please check the link.");
+      return;
+    }
+
+    try {
+      const response = await fetch(API_URL);
+
+      if (!response.ok) {
+        throw new Error("API request failed: HTTP " + response.status);
+      }
+
+      const data = await response.json();
+
+      if (attempt !== loadAttempt) return;
+
+      if (!data.iframes || !Array.isArray(data.iframes)) {
+        throw new Error("Invalid iframe data received from API.");
+      }
+
+      /* MATCH ID USING FIRST HTML API STRUCTURE */
+      const match = data.iframes.find(function (item) {
+        return String(item.id) === String(id);
+      });
+
+      if (!match || !match.iframeSrc) {
+        throw new Error(
+          "Invalid or unavailable stream ID. Please check the link."
+        );
+      }
+
+      const iframeUrl = new URL(match.iframeSrc, window.location.href);
+
+      if (!["https:", "http:"].includes(iframeUrl.protocol)) {
+        throw new Error("Invalid iframe URL.");
+      }
+
+      /* CREATE IFRAME */
+      const iframe = document.createElement("iframe");
+
+      iframe.src = iframeUrl.href;
+
+      /* ENCRYPTED MEDIA + PLAYBACK PERMISSIONS */
+      iframe.setAttribute(
+        "allow",
+        "autoplay; encrypted-media; fullscreen; picture-in-picture"
+      );
+
+      iframe.setAttribute("allowfullscreen", "");
+      iframe.setAttribute("webkitallowfullscreen", "");
+
+      /* SANDBOX: block popups, top navigation, modals, downloads */
+      iframe.setAttribute(
+        "sandbox",
+        "allow-same-origin allow-scripts allow-forms allow-presentation"
+      );
+
+      /* Prevent referrer leakage / redirects */
+      iframe.setAttribute("referrerpolicy", "no-referrer");
+
+      iframe.setAttribute("loading", "eager");
+      iframe.setAttribute("title", "Tushar_Stream Live Stream");
+
+      iframe.style.width = "100%";
+      iframe.style.height = "100%";
+      iframe.style.border = "none";
+      iframe.style.display = "block";
+
+      iframe.addEventListener("load", function () {
+        if (attempt === loadAttempt) {
+          hideLoading();
+        }
+      });
+
+      iframe.addEventListener("error", function () {
+        if (attempt === loadAttempt) {
+          showError("Unable to load the embedded player.");
+        }
+      });
+
+      playerContainer.appendChild(iframe);
+
+      console.log("Tushar_Stream iframe initialized for ID:", id);
+
+    } catch (error) {
+      if (attempt !== loadAttempt) return;
+      console.error("Tushar_Stream Player Error:", error);
+      showError(error.message || "Stream could not be loaded.");
+    }
+  }
+
+  /* SHARE */
+  async function copyStreamLink(url) {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(url);
+    } else {
+      const input = document.createElement("textarea");
+      input.value = url;
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+
+      const copied = document.execCommand("copy");
+      input.remove();
+
+      if (!copied) throw new Error("Copy failed");
+    }
+
+    showToast("Link copied to clipboard");
+  }
+
+  shareBtn.addEventListener("click", async function () {
+    const url = window.location.href;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Tushar_Stream Live",
+          text: "Watch this live stream on Tushar_Stream",
+          url: url
+        });
+      } else {
+        await copyStreamLink(url);
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        try {
+          await copyStreamLink(url);
+        } catch (_) {
+          showToast("Unable to copy link");
+        }
+      }
+    }
+  });
+
+  /* START */
+  initPlayer();
+
+});
+</script>
+</body>
+</html>
